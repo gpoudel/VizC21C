@@ -1,0 +1,708 @@
+---
+title: "Capital in Twenty First Century by Thomas Piketty."
+output: 
+  flexdashboard::flex_dashboard:
+    #storyboard: true
+    social: menu
+    #source: embed
+---
+
+
+```{r setup, include=FALSE}
+
+#Clear the workspace - remove all variables
+rm(list = ls())
+
+library(Quandl)
+library(plotly)
+
+library(flexdashboard)
+
+```
+
+
+```{r}
+titleVar  <- list(
+          #family = "Ariel",
+          size = 18
+          #color = "#7f7f7f"
+          )
+```
+
+Introduction {.storyboard}
+=========================================
+
+### <b>Income inequality in the United States, 1910-2010</b>
+
+```{r}
+
+i1 <- Quandl("PIKETTY/TSI_1", api_key="yg2rjFAWcN1FgzoJ1naL")
+
+plot_ly(i1, x=i1$Date, y=i1$Value, mode = 'lines+markers', type = "scatter") %>%
+  layout(title = '<b>Income inequality in the United States, 1910-2010</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Share of top decile in national income</b>'))
+
+
+```
+
+***
+
+Introduction
+
+- FIGURE I.1
+
+- page 36
+
+- Context 
+
+
+
+### <b>The capital/income ratio in Europe, 1870-2010</b>
+
+```{r}
+
+
+i2 <- Quandl("PIKETTY/TSI_2", api_key="yg2rjFAWcN1FgzoJ1naL")
+
+
+plot_ly(i2, x=i2$Date, y = i2$Germany, name = "<b>Germany</b>", mode = 'lines+markers', type='scatter') %>%
+  add_trace(x=i2$Date, y = i2$France,  name = "<b>France</b>", connectgaps = TRUE) %>%
+  add_trace(x=i2$Date, y = i2$Britain, name = "<b>Britain</b>", connectgaps = TRUE) %>%
+  layout(title = '<b>The capital/income ratio in Europe, 1870-2010</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Market value of private capital (% national income)</b>'))
+
+
+```
+
+***
+
+Introduction
+
+- FIGURE I.2
+
+- Page 38
+
+- Context
+
+
+Part One {.storyboard}
+=========================================
+
+### <b>The distribution of world output, 1700-2012</b>
+
+```{r}
+
+c1_1 <- Quandl("PIKETTY/TS1_1A", api_key="yg2rjFAWcN1FgzoJ1naL")
+
+#GP: taking first 8 rows only, data since 1700 AD
+c1_1 <- c1_1[1:8,]
+
+#NOTE: code below gave none stacked graph, we need to stack one on top of another 
+# plot_ly(data=c1_1, x=Date, y=`World output`, fill="tonexty", mode="lines")  %>%
+#            add_trace(x=Date, y = Europe, fill="tonexty") %>%
+#            add_trace(x=Date, y = America, fill="tonexty") %>%
+#            add_trace(x=Date, y = Africa, fill="tonexty") %>%
+#            add_trace(x=Date, y = Asia, fill="tonexty")
+               
+
+
+Years <- c1_1$Date
+y1_real<- c1_1$Europe
+y2_real<- c1_1$America
+y3_real<- c1_1$Africa
+y4_real<- c1_1$Asia
+
+
+
+
+df= data.frame(Years, y1_real, y2_real, y3_real, y4_real)
+
+df$y4_stck<- df$y4_real + df$y3_real + df$y2_real + df$y1_real
+df$y3_stck<- df$y3_real + df$y2_real + df$y1_real
+df$y2_stck<- df$y2_real + df$y1_real
+df$y1_stck<- df$y1_real
+ 
+
+ p1<- plot_ly(df, x=df$Years, y=df$y1_stck, text=df$y1_real, hoverinfo='x+text+name', name="Europe", fill="tonexty", type = 'scatter', mode = "markers") %>%
+   layout(title = '<b>The distribution of world output, 1700-2012</b>',
+          titlefont = titleVar,
+          xaxis = list(title = '<b>Years</b>'),
+          yaxis = list (title = '<b>Percentage of Total World Output</b>'))
+ 
+ 
+ p2<- add_trace(p1, x=df$Years, y=df$y2_stck, text=df$y2_real, type = 'scatter', mode = "markers", hoverinfo='x+text+name', name="America", fill="tonexty")
+ p3<- add_trace(p2, x=df$Years, y=df$y3_stck, text=df$y3_real, type = 'scatter', mode = "markers", hoverinfo='x+text+name', name="Africa", fill="tonexty") 
+ p4<- add_trace(p3, x=df$Years, y=df$y4_stck, text=df$y4_real, type = 'scatter', mode = "markers", hoverinfo='x+text+name', name="Asia", fill="tonexty") 
+      
+p4
+
+rm(df, p1, p2, p3, p4, y1_real, y2_real, y3_real, y4_real, Years)
+
+
+```
+
+***
+
+Part One: Income and Capital
+
+- Income and Output
+
+- FIGURE 1.1
+
+- Page 75
+
+- Context 
+
+
+### <b>The distribution of world population, 1700-2012</b>
+
+```{r}
+
+
+
+c1_2 <- Quandl("PIKETTY/TS1_2A", api_key="yg2rjFAWcN1FgzoJ1naL")
+
+
+#GP: taking first 8 rows only, data since 1700 AD
+c1_2 <- c1_2[1:8,]
+
+
+Years <- c1_2$Date
+y1_real<- c1_2$Europe
+y2_real<- c1_2$America
+y3_real<- c1_2$Africa
+y4_real<- c1_2$Asia
+
+
+df= data.frame(Years, y1_real, y2_real, y3_real, y4_real)
+
+df$y4_stck<- df$y4_real + df$y3_real + df$y2_real + df$y1_real
+df$y3_stck<- df$y3_real + df$y2_real + df$y1_real
+df$y2_stck<- df$y2_real + df$y1_real
+df$y1_stck<- df$y1_real
+
+p1<- plot_ly(df, x=df$Years, y=df$y1_stck, text=df$y1_real, type = 'scatter', mode = "markers", hoverinfo='x+text+name', name="Europe", fill="tonexty") %>%
+  layout(title = '<b>The distribution of world population, 1700-2012</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Percentage of Total World Population</b>'))
+
+
+p2<- add_trace(p1, x=df$Years, y=df$y2_stck, type = 'scatter', mode = "markers", text=df$y2_real, hoverinfo='x+text+name', name="America", fill="tonexty")
+p3<- add_trace(p2, x=df$Years, y=df$y3_stck, type = 'scatter', mode = "markers", text=df$y3_real, hoverinfo='x+text+name', name="Africa", fill="tonexty")
+p4<- add_trace(p3, x=df$Years, y=df$y4_stck, type = 'scatter', mode = "markers", text=df$y4_real, hoverinfo='x+text+name', name="Asia", fill="tonexty")
+
+p4
+
+rm(df, p1, p2, p3, p4, y1_real, y2_real, y3_real, y4_real, Years)
+
+```
+
+***
+Part One: Income and Capital
+
+- Income and Output
+
+- FIGURE 1.2
+
+- Page 76
+
+- Context 
+
+
+
+
+### <b>Global inequality, 1700-2012: divergence then convergence ?</b>
+
+```{r}
+
+
+c1_3 <- Quandl("PIKETTY/TS1_3A", api_key="yg2rjFAWcN1FgzoJ1naL")
+
+c1_3 <- c1_3[1:8,]
+
+
+plot_ly(c1_3, x=c1_3$Date, y=c1_3$`Europe + America`, name = "<b>Europe + America</b>", mode = 'lines+markers', type = 'scatter') %>%
+  add_trace(x=c1_3$Date, y = c1_3$`Asia + Africa`, name = "<b>Asia + Africa</b>", connectgaps = TRUE) %>%
+  add_trace(x=c1_3$Date, y = c1_3$`Per capita output`, name = "<b>World</b>", connectgaps = TRUE) %>%
+  layout(title = '<b>Global inequality, 1700-2012: divergence then convergence?</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Per capita GDP(% of World Average)</b>'))
+
+
+
+```
+
+***
+
+Part One: Income and Capital
+
+- Income and Output
+
+- FIGURE 1.3
+
+- Page 77
+
+- Context 
+
+
+
+### <b>Exchange rate and purchasing power parity: euro/dollar</b>
+
+```{r}
+
+c1_4 <- Quandl("PIKETTY/TS1_7", api_key="Kv-CaGGQMdMbP2q7nER2")
+
+
+plot_ly(c1_4, x=c1_4$Date, y=c1_4$`exchange rate euro/dollar`, name = "<b>Exchange rate euro/dollar</b>", 
+                                                               mode = 'lines+markers',
+                                                               type = 'scatter',
+                                                               marker = list(symbol = 'square')) %>%
+  add_trace(x=c1_4$Date, y = c1_4$`purchasing power parity euro/dollar`, name = "<b>Purchasing power parity euro/dollar</b>", 
+                                                                    mode = 'lines+markers',  
+                                                                    type = 'scatter',
+                                                                    marker = list(symbol = "triangle-up-open"),
+                                                                    connectgaps = TRUE) %>%
+  layout(title = '<b>Exchange rate and purchasing power parity: euro/dollar</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b></b>'))
+
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Income and Output
+
+- FIGURE 1.4
+
+- Page 82
+
+- Context 
+
+
+
+### <b>Exchange rate and purchasing power parity: euro/yuan</b>
+
+```{r}
+
+
+#c1_4 <- Quandl("PIKETTY/TS1_7", api_key="Kv-CaGGQMdMbP2q7nER2")
+
+
+plot_ly(c1_4, x=c1_4$Date, y= c1_4$`exchange rate euro/yuan`, name = "<b>Exchange rate euro/yuan</b>", 
+                                                              mode = 'lines+markers',  
+                                                              type = 'scatter',
+                                                              marker = list(symbol = 'square')) %>%
+  add_trace(x=c1_4$Date, y = c1_4$`purchasing power parity euro/yuan`, name = "<b>Purchasing power parity euro/yuan</b>", 
+                                                                       mode = 'lines+markers',  
+                                                                       type = 'scatter',
+                                                                     marker = list(symbol = "triangle-up-open"),
+                                                                connectgaps = TRUE) %>%
+  layout(title = '<b>Exchange rate and purchasing power parity: euro/yuan</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b></b>'))
+
+
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Income and Output
+
+- FIGURE 1.5
+
+- Page 85
+
+- Context 
+
+
+
+
+### <b>The growth of world population, 1700-2012</b>
+
+```{r}
+
+c2_1 <- Quandl("PIKETTY/TS2_2C", api_key="Kv-CaGGQMdMbP2q7nER2", start_date="1700-01-01")
+
+
+c2_1 <- c2_1[5:11,]
+
+Years <- c2_1$Year
+y1_real<- c2_1$Europe
+y2_real<- c2_1$Amrica
+y3_real<- c2_1$Africa
+y4_real<- c2_1$Asia
+
+
+df= data.frame(Years, y1_real, y2_real, y3_real, y4_real)
+
+df$y4_stck<- df$y4_real + df$y3_real + df$y2_real + df$y1_real
+df$y3_stck<- df$y3_real + df$y2_real + df$y1_real
+df$y2_stck<- df$y2_real + df$y1_real
+df$y1_stck<- df$y1_real
+
+p1<- plot_ly(df, x=df$Years, y=df$y1_stck, text=df$y1_real, hoverinfo='x+text+name', 
+                                                            name="Europe", 
+                                                            mode = 'lines+markers',  
+                                                            type = 'scatter',
+                                                            fill="tonexty") %>%
+  layout(title = '<b>The growth of world population, 1700-2012</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>World population (million inhabitants)</b>'))
+
+
+p2<- add_trace(p1, x=df$Years, y=df$y2_stck, text=df$y2_real, hoverinfo='x+text+name', name="America", fill="tonexty")
+p3<- add_trace(p2, x=df$Years, y=df$y3_stck, text=df$y3_real, hoverinfo='x+text+name', name="Africa", fill="tonexty")
+p4<- add_trace(p3, x=df$Years, y=df$y4_stck, text=df$y4_real, hoverinfo='x+text+name', name="Asia", fill="tonexty")
+
+p4 
+
+
+rm(df, p1, p2, p3, p4, y1_real, y2_real, y3_real, y4_real, Years)
+
+
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Growth: Illusions and Realities
+
+- FIGURE 2.1
+
+- Page 95
+
+- Context 
+
+
+
+
+### <b>The growth rate of world population from Antiquity to 2100</b>
+
+```{r}
+
+c2_2 <- Quandl("PIKETTY/TS2_2A", api_key="Kv-CaGGQMdMbP2q7nER2")
+
+plot_ly(c2_2, x=c2_2$`Year Ending`, y=c2_2$World, mode = 'lines+markers',  marker = list(symbol = 'square'), type='scatter') %>%
+  layout(title = '<b>The growth rate of world population from Antiquity to 2100</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>World Population growth rate</b>'))
+
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Growth: Illusions and Realities
+
+- FIGURE 2.2
+
+- Page 101
+
+- Context 
+
+
+
+
+
+
+### <b>The growth rate of per capita output since the Industrial Revolution</b>
+
+```{r}
+
+c2_3 <- Quandl("PIKETTY/S2_3", api_key="Kv-CaGGQMdMbP2q7nER2")
+  
+c2_3 <- c2_3[5:11,]
+
+plot_ly(c2_3, x=c2_3$`Year Ending`, y=c2_3$`Western Europe`, name = "<b>Western Europe</b>", 
+                                                             mode = 'lines+markers', 
+                                                             type = 'scatter',
+                                                             marker = list(symbol = 'square')) %>%
+  add_trace(x=c2_3$`Year Ending`, y = c2_3$`North America`, name = "<b>North America</b>", 
+                                                            mode = 'lines+markers', 
+                                                            type = 'scatter',
+                                                            marker = list(symbol = 'square'),
+                                                            connectgaps = TRUE) %>%
+  
+  layout(title = '<b>The growth rate of per capita output since the Industrial Revolution</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Growth rate of per capita GDP</b>'))
+  
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Growth: Illusions and Realities
+
+- FIGURE 2.3
+
+- Page 122
+
+- Context 
+
+
+
+
+
+
+### <b>The growth rate of world per capita output from Antiquity to 2100</b>
+
+```{r}
+
+c2_4 <- read.csv("./c2_4.csv", header = TRUE)
+  
+
+plot_ly(c2_4, x=c2_4$Years, y=c2_4$Per.capita.world.output, mode = 'lines+markers', 
+                                                            type = 'scatter',
+                                                            marker = list(symbol = 'square')) %>%
+  layout(title = '<b>The growth rate of world per capita output from Antiquity to 2100</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Growth rate of per capita GDP</b>'))
+  
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Growth: Illusions and Realities
+
+- FIGURE 2.4
+
+- Page 125
+
+- Context 
+
+
+
+
+### <b>The growth rate of world output from Antiquity to 2100</b>
+
+```{r}
+
+plot_ly(c2_4, x=c2_4$Years, y=c2_4$World.output, mode = 'lines+markers', 
+                                                 type = 'scatter',
+                                                 marker = list(symbol = 'square')) %>%
+  layout(title = '<b>The growth rate of world output from Antiquity to 2100</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Growth rate World GDP</b>'))
+  
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Growth: Illusions and Realities
+
+- FIGURE 2.5
+
+- Page 127
+
+- Context 
+
+
+
+
+
+
+### <b>Inflation since the Industrial Revolution</b>
+
+```{r}
+
+c2_5 <- Quandl("PIKETTY/S2_5", api_key="Kv-CaGGQMdMbP2q7nER2")
+  
+
+plot_ly(c2_5, x=c2_5$`Year Ending`, y=c2_5$France,  name="<b>France</b>", mode = 'lines+markers', type = 'scatter') %>%
+  add_trace(x=c2_5$`Year Ending`, y=c2_5$Germany, name="<b>Germany</b>", mode = 'lines+markers',
+                                                 marker = list(symbol = 'triangle-up')) %>%
+  add_trace(x=c2_5$`Year Ending`, y=c2_5$`United States`, name="<b>United States</b>", mode = 'lines+markers',
+                                                 marker = list(symbol = 'triangle-up-open')) %>%
+  add_trace(x=c2_5$`Year Ending`, y=c2_5$Britain, name="<b>Britian</b>", mode = 'lines+markers',
+                                                 marker = list(symbol = 'square-open')) %>%
+  layout(title = '<b>Inflation since the Industrial Revolution</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Inflation rate(consumer price index)</b>'))
+  
+```
+
+***
+
+
+Part One: Income and Capital
+
+- Growth: Illusions and Realities
+
+- FIGURE 2.6
+
+- Page 135
+
+- Context 
+
+
+
+
+Part Two {.storyboard}
+=========================================
+
+
+### <b>Capital in Britain, 1700-2010</b>
+
+```{r}
+
+c3_1 <- Quandl("PIKETTY/T3_1", api_key="Kv-CaGGQMdMbP2q7nER2")
+
+#GP: taking first 8 rows only, data since 1700 AD
+c3_1 <- c3_1[,1:6]
+
+
+Years <- c3_1$Year
+y1_real<- c3_1$`incl. Land`
+y2_real<- c3_1$`incl. Housing`
+y3_real<- c3_1$`incl. Other domestic capital assets`
+y4_real<- c3_1$`incl. Net foreign capital`
+
+
+
+df= data.frame(Years, y1_real, y2_real, y3_real, y4_real)
+
+df$y4_stck<- df$y4_real + df$y3_real + df$y2_real + df$y1_real
+df$y3_stck<- df$y3_real + df$y2_real + df$y1_real
+df$y2_stck<- df$y2_real + df$y1_real
+df$y1_stck<- df$y1_real
+
+p1<- plot_ly(df, x=df$Years, y=df$y1_stck, text=df$y1_real, mode = 'lines+markers', 
+                                                            type = 'scatter', 
+                                                            hoverinfo='x+text+name', 
+                                                            name="Agricultural land", 
+                                                            fill="tonexty") %>%
+  layout(title = '<b>Capital in Britain, 1700-2010</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Value of national capital(% of national income)</b>'))
+
+
+p2<- add_trace(p1, x=df$Years, y=df$y2_stck, text=df$y2_real, hoverinfo='x+text+name', name="Housing", fill="tonexty")
+p3<- add_trace(p2, x=df$Years, y=df$y3_stck, text=df$y3_real, hoverinfo='x+text+name', name="Other domestic capital", fill="tonexty")
+p4<- add_trace(p3, x=df$Years, y=df$y4_stck, text=df$y4_real, hoverinfo='x+text+name', name="Net foreign capital", fill="tonexty")
+
+p4
+ 
+# p5<- layout(yaxis=list(showgrid=FALSE, showline=FALSE))
+# p5
+
+rm(df, p1, p2, p3, p4, p5, y1_real, y2_real, y3_real, y4_real, Years)
+
+
+
+```
+
+***
+
+
+Part Two: THE DYNAMICS OF THE CAPITAL/INCOME RATIO
+
+- The Metamorphoses of Capital
+
+- FIGURE 3.1
+
+- Page 142
+
+- Context 
+
+
+
+
+### <b>Capital in France, 1700-2010</b>
+
+```{r}
+
+c3_2 <- Quandl("PIKETTY/T3_2", api_key="Kv-CaGGQMdMbP2q7nER2")
+
+#GP: taking first 8 rows only, data since 1700 AD
+c3_2 <- c3_2[,1:6]
+
+
+Years <- c3_2$Year
+y1_real<- c3_2$`incl. Land`
+y2_real<- c3_2$`incl. Housing`
+y3_real<- c3_2$`incl. Other domestic capital assets`
+y4_real<- c3_2$`incl. Net foreign capital`
+
+
+
+df= data.frame(Years, y1_real, y2_real, y3_real, y4_real)
+
+df$y4_stck<- df$y4_real + df$y3_real + df$y2_real + df$y1_real
+df$y3_stck<- df$y3_real + df$y2_real + df$y1_real
+df$y2_stck<- df$y2_real + df$y1_real
+df$y1_stck<- df$y1_real
+
+p1<- plot_ly(df, x=df$Years, y=df$y1_stck, text=df$y1_real, mode = 'lines+markers', 
+                                                            type = 'scatter', 
+                                                            hoverinfo='x+text+name', 
+                                                            name="Agricultural land", 
+                                                            fill="tonexty") %>%
+  layout(title = '<b>Capital in France, 1700-2010</b>',
+         titlefont = titleVar,
+         xaxis = list(title = '<b>Years</b>'),
+         yaxis = list (title = '<b>Value of national capital(% of national income)</b>'))
+
+
+p2<- add_trace(p1, x=df$Years, y=df$y2_stck, text=df$y2_real, hoverinfo='x+text+name', name="Housing", fill="tonexty")
+p3<- add_trace(p2, x=df$Years, y=df$y3_stck, text=df$y3_real, hoverinfo='x+text+name', name="Other domestic capital", fill="tonexty")
+p4<- add_trace(p3, x=df$Years, y=df$y4_stck, text=df$y4_real, hoverinfo='x+text+name', name="Net foreign capital", fill="tonexty")
+
+p4
+
+# p5<- layout(yaxis=list(showgrid=FALSE, showline=FALSE))
+# p5
+
+rm(df, p1, p2, p3, p4, y1_real, y2_real, y3_real, y4_real, Years)
+
+
+```
+
+***
+
+
+Part Two: THE DYNAMICS OF THE CAPITAL/INCOME RATIO
+
+- The Metamorphoses of Capital
+
+- FIGURE 3.2
+
+- Page 143
+
+- Context 
+
+
+
