@@ -18,3 +18,4 @@ Chapterwise Visualization of every chart from the book **'Capital in Twenty Firs
 
 
 * Navigate through different charts of each PART using the Chart description under the respective PART.
+![Alt text](https://gpoudel.github.io/VizC21C/ChartsPerChapter.PNG "Capital in Twenty First Century by Thomas Piketty")
