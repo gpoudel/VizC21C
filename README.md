@@ -22,4 +22,4 @@ Chapterwise Visualization of every chart from the book **'Capital in Twenty Firs
 
 
 * Interact with mouse pointer.
-![Alt text](https://gpoudel.github.io/VizC21C/interact.PNG "Interact")
+![Alt text](https://gpoudel.github.io/VizC21C/interact.png "Interact")
