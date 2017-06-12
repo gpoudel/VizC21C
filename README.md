@@ -5,4 +5,13 @@
 ## Intorduction
 Chapterwise Visualization of every chart from the book **'Capital in Twenty First Century'** by **Thomas Piketty**.
 
-![Alt text](https://gpoudel.github.io/VizC21C/cover.jpg "A wordcloud image created in 'R' by mining twitter for term 'FPL'")
+![Alt text](https://gpoudel.github.io/VizC21C/cover.jpg "Capital in Twenty First Century by Thomas Piketty")
+
+
+
+
+## Accessing the visualization
+
+Navigate through the PARTs of the book using the top bar.
+
+![Alt text](https://gpoudel.github.io/VizC21C/Chapters.png "Capital in Twenty First Century by Thomas Piketty")
