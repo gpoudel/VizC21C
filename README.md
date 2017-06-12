@@ -5,4 +5,4 @@
 ## Intorduction
 Chapterwise Visualization of every chart from the book **'Capital in Twenty First Century'** by **Thomas Piketty**.
 
-![Alt text](https://gpoudel.github.io/gitFPL/fplBoardLive/2016/fpltwitter.png "A wordcloud image created in 'R' by mining twitter for term 'FPL'")
+![Alt text](https://gpoudel.github.io/VizC21C/cover.jpg "A wordcloud image created in 'R' by mining twitter for term 'FPL'")
